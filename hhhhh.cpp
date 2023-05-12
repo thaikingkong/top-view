@@ -1,92 +1,60 @@
-#include<bits/stdc++.h>
-
+#include <bits/stdc++.h>
 using namespace std;
 
 class Node {
-    public:
-        int data;
-        Node *left;
-        Node *right;
-        Node(int d) {
-            data = d;
-            left = NULL;
-            right = NULL;
-        }
-};
-
-class Solution {
-    public:
-  		Node* insert(Node* root, int data) {
-            if(root == NULL) {
-                return new Node(data);
-            } else {
-                Node* cur;
-                if(data <= root->data) {
-                    cur = insert(root->left, data);
-                    root->left = cur;
-                } else {
-                    cur = insert(root->right, data);
-                    root->right = cur;
-               }
-
-               return root;
-           }
-        }
-
-/*
-class Node {
-    public:
-        int data;
-        Node *left;
-        Node *right;
-        Node(int d) {
-            data = d;
-            left = NULL;
-            right = NULL;
-        }
-};
-
-*/
-
-    void topView(Node * root) {
-        queue<pair<int,Node*>> q;
-        q.push(make_pair(0,root));
-        map<int,Node*> ans;
-        while(!q.empty()){
-            auto i=q.front();
-            if(i.second != nullptr){
-                ans.insert(i);
-                q.push(make_pair(i.first+1,i.second->right));
-                q.push(make_pair(i.first-1,i.second->left));
-            }
-            q.pop();
-            i=q.front();
-        }
-        vector<int> A;
-        for (auto i:ans)
-            A.push_back(i.second->data);
-        sort(A.begin(), A.end()); 
-        for (int j=0;j<A.size();j++)
-        	cout << A[j] << " ";
+public:
+    int data;
+    Node* left;
+    Node* right;
+    Node(int d) {
+        data = d;
+        left = NULL;
+        right = NULL;
     }
+};
 
-}; //End of Solution
+void printTopView(Node* root) {
+    if (root == NULL) return;
+
+    map<int, int> hdToVal;  // Lưu giữ giá trị đầu tiên của mỗi cột
+    queue<Node*> q;
+    queue<int> hdQ;         // Lưu giữ độ cao của mỗi nút
+    q.push(root);
+    hdQ.push(0);
+
+    while (!q.empty()) {
+        Node* cur = q.front();
+        q.pop();
+        int hd = hdQ.front();
+        hdQ.pop();
+
+        if (hdToVal.find(hd) == hdToVal.end()) {
+            hdToVal[hd] = cur->data;
+            cout << cur->data << " ";
+        }
+
+        if (cur->left != NULL) {
+            q.push(cur->left);
+            hdQ.push(hd - 1);
+        }
+        if (cur->right != NULL) {
+            q.push(cur->right);
+            hdQ.push(hd + 1);
+        }
+    }
+}
 
 int main() {
-  
-    Solution myTree;
-    Node* root = NULL;
-    
-    int t;
-    int data;
+    Node* root = new Node(1);
+    root->left = new Node(2);
+    root->right = new Node(3);
+    root->left->right = new Node(4);
+    root->left->right->right = new Node(5);
+    root->left->right->right->right = new Node(6);
 
-    std::cin >> t;
+    cout << "Top view of the binary tree is: ";
+    printTopView(root);
+    cout << endl;
 
-    while(t-- > 0) {
-        std::cin >> data;
-        root = myTree.insert(root, data);
-    }
-  
-	myTree.topView(root);
     return 0;
 }
