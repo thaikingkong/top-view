@@ -55,19 +55,16 @@ class Node {
         while(!q.empty()){
             auto i=q.front();
             if(i.second != nullptr){
-                ans.insert(i);
+                if(ans.find(i.first)==ans.end())
+                    ans.insert(i);
                 q.push(make_pair(i.first+1,i.second->right));
                 q.push(make_pair(i.first-1,i.second->left));
             }
             q.pop();
             i=q.front();
         }
-        vector<int> A;
         for (auto i:ans)
-            A.push_back(i.second->data);
-        sort(A.begin(), A.end()); 
-        for (int j=0;j<A.size();j++)
-        	cout << A[j] << " ";
+            cout << i.second->data << " ";
     }
 
 }; //End of Solution
